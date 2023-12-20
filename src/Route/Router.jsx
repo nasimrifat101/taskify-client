@@ -4,12 +4,13 @@ import Home from "../Pages/components/Home/Home";
 import NotFound from "../Pages/components/Error/NotFound";
 import Login from "../Pages/components/Auth/Login";
 import Signup from "../Pages/components/Auth/SignUp";
+import Dashboard from "../Pages/Layout/Dash/Dashboard";
 
 export const router = createBrowserRouter([
     {
         path: "/",
         element: <Main />,
-        errorElement:<NotFound/>,
+        errorElement: <NotFound />,
         children: [
             {
                 path: '/',
@@ -17,11 +18,15 @@ export const router = createBrowserRouter([
             },
             {
                 path: '/login',
-                element: <Login/>
+                element: <Login />
             },
             {
                 path: '/signup',
-                element: <Signup/>
+                element: <Signup />
+            },
+            {
+                path: '/dashboard',
+                element: <Dashboard />
             }
         ]
     },
