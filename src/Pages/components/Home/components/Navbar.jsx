@@ -8,7 +8,7 @@ const Navbar = () => {
         <li><NavLink to='/about'>About</NavLink></li>
         {
             user && <li><NavLink to='/dashboard'>Dashboard</NavLink></li>
-   }
+        }
 
     </>
     return (
@@ -31,7 +31,22 @@ const Navbar = () => {
                     </ul>
                 </div>
                 <div className="navbar-end">
-                    <NavLink to='/login' className="btn">Login</NavLink>
+                    {
+                        user ?
+                            <div className="dropdown dropdown-end">
+                                <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+                                    <div className="w-10 rounded-full">
+                                        <img alt={user?.displayName} src={user ? user?.photoURL : "https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"} />
+                                    </div>
+                                </div>
+                                <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-300 rounded-box">
+                                    <li><a>Logout</a></li>
+                                </ul>
+                            </div>
+                            :
+
+                            <NavLink to='/login' className="btn">Login</NavLink>
+                    }
                 </div>
             </div>
         </div>
@@ -39,3 +54,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
