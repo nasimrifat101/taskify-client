@@ -42,22 +42,9 @@ const SignUp = () => {
 
             await createNewUser(email, password);
             await updateUserProfile(name, imageURL);
-            // post user
-            const userInfo = { name, profile: imageURL, email };
-            axiosNormal.post("/users", userInfo).then((res) => {
-                if (res.data.insertedId) {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "success",
-                        title: "User Created",
-                        showConfirmButton: false,
-                        timer: 1500,
-                    });
-                    navigate("/");
-                } else {
-                    toast.success("Account Created Successfully");
-                }
-            });
+
+            navigate("/dashboard");
+
         } catch (error) {
             console.error(error);
             toast.error(

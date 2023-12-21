@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { GithubAuthProvider, GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
+import { GithubAuthProvider, GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import { auth } from "../Firebase/firebase.config";
 
@@ -47,7 +47,7 @@ const AuthProvider = ({ children }) => {
 
     const logOut = () => {
         setLoading(true)
-        return auth.signOut()
+        return signOut(auth)
     }
 
     const gitSignIn = ()=>{

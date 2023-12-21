@@ -21,7 +21,7 @@ const Login = () => {
     const onSubmit = async (data) => {
         try {
             await signInUser(data.email, data.password);
-            navigate(location?.state ? location.state : "/");
+            navigate(location?.state ? location.state : "/dashboard");
         } catch (error) {
             console.error("Login failed:", error);
             toast.error("Invalid email or password. Please try again.");

@@ -10,16 +10,9 @@ const SocialLogin = () => {
 
     const handleGoogleSignIn = () => {
         googleSignIn().then((result) => {
-            console.log(result.user);
-            const userInfo = {
-                email: result.user?.email,
-                name: result.user?.displayName,
-                profile: result.user?.photoURL,
-            };
-            navigate("/");
-            axiosPublic.post("/users", userInfo).then((res) => {
-                console.log(res.data);
-            });
+            console.log(result.data)
+            navigate("/dashboard");
+
         });
     };
     const handleGitSignIn = () => {
