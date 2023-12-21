@@ -184,7 +184,7 @@ const Dashboard = () => {
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                          className="card card-compact m-2 bg-base-100 shadow-xl"
+                          className="card card-compact m-2 bg-base-100 bg-opacity-50 shadow-xl"
                         >
                           <div className="card-body space-y-1">
                             <div className="flex justify-between items-center">
@@ -309,7 +309,7 @@ const Dashboard = () => {
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                          className="card card-compact m-2 bg-base-100 shadow-xl"
+                          className="card card-compact m-2 bg-base-100 bg-opacity-50 shadow-xl"
                         >
                           <div className="card-body space-y-1">
                             <div className="flex justify-between items-center">
@@ -371,7 +371,7 @@ const Dashboard = () => {
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                          className="card card-compact m-2 bg-base-100 shadow-xl"
+                          className="card card-compact m-2 bg-base-100 bg-opacity-50 shadow-xl"
                         >
                           <div className="card-body space-y-1">
                             <div className="flex justify-between items-center">
