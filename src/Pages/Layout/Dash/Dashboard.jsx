@@ -1,19 +1,22 @@
 /* eslint-disable no-unused-vars */
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { FaCalendar } from "react-icons/fa";
+import { FaCalendar, FaCheckSquare } from "react-icons/fa";
 import { FcHighPriority, FcLowPriority, FcMediumPriority } from "react-icons/fc";
 import { RiDeleteBin2Fill } from "react-icons/ri";
 import { ToastContainer, toast } from "react-toastify";
-import { useEffect} from "react";
+import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import NavDash from "./Components/NavDash";
+import { MdOutlineUpdate } from "react-icons/md";
+
 
 const Dashboard = () => {
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
   const queryClient = useQueryClient();
+
 
   useEffect(() => {
     // Manually trigger the queries when user data is available
@@ -25,7 +28,7 @@ const Dashboard = () => {
   }, [user?.email, queryClient]);
 
   const { data: tasks, refetch: refetchTasks, isLoading: tasksLoading } = useQuery({
-    queryKey: ['tasks', user?.email], // Use user?.email as part of the query key
+    queryKey: ['tasks', user?.email],
     queryFn: async () => {
       if (!user?.email) {
         return [];
@@ -94,7 +97,7 @@ const Dashboard = () => {
     });
   };
 
-  
+
   const isDeadlineNear = (deadline) => {
     const deadlineDate = new Date(deadline);
     const currentDate = new Date();
@@ -110,11 +113,59 @@ const Dashboard = () => {
     }
   };
 
+
+
+  const handleUpgrade = (event, id) => {
+
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const formDataObject = {};
+
+    // Format the date field if it exists in the form data
+    if (formData.has('deadline')) {
+      const deadlineDate = new Date(formData.get('deadline'));
+      const day = deadlineDate.getDate();
+      const month = new Intl.DateTimeFormat('en', { month: 'short' }).format(deadlineDate);
+      const year = deadlineDate.getFullYear();
+      const formattedDeadline = `${day} ${month} ${year}`;
+
+      formData.set('deadline', formattedDeadline);
+    }
+
+    // Convert FormData to an object
+    formData.forEach((value, key) => {
+      formDataObject[key] = value;
+    });
+
+    console.log('Form Data:', formDataObject);
+
+  
+
+    axiosPublic.put(`/updateTask/${id}`,formDataObject )
+      .then((res) => {
+        if(res.data.modifiedCount > 0){
+          toast('Task Updated Successfully');
+          refetchTasks();
+          refetchOngoing()
+          refetchCompleted()
+          event.target.reset();
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      })
+
+
+
+  };
+
+
   return (
     <div>
       <NavDash title={`Welcome ${user?.displayName}`} btn='Add Task' profile={user?.photoURL} refetch={refetchTasks} />
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-1 px-1">
           <Droppable droppableId="todo">
             {(provided) => (
               <div
@@ -122,7 +173,7 @@ const Dashboard = () => {
                 ref={provided.innerRef}
                 className="flex-1 bg-base-300 min-h-screen"
               >
-                <h1 className="text-center bg-green-300 p-3 font-bold text-base-300">To-do</h1>
+                <h1 className="text-center bg-green-300 p-3 font-bold text-base-300 rounded-t-xl">To-do</h1>
                 <div>
                   {tasks?.map((task, index) => (
                     <Draggable key={task._id} draggableId={task._id} index={index}>
@@ -136,12 +187,75 @@ const Dashboard = () => {
                           <div className="card-body space-y-1">
                             <div className="flex justify-between items-center">
                               <h2 className="font-bold">{task.title}</h2>
-                              <button
-                                onClick={() => handleDelete(task._id)}
-                                className="btn btn-xs text-red-500"
-                              >
-                                <RiDeleteBin2Fill />
-                              </button>
+                              <div className='space-x-1'>
+                                {/* The button to open modal */}
+                                <label htmlFor={`my_modal_${task._id}`} className="btn btn-xs">
+                                  <MdOutlineUpdate />
+                                </label>
+
+
+                                {/* Put this part before </body> tag */}
+                                <input type="checkbox" id={`my_modal_${task._id}`} className="modal-toggle" />
+
+                                <div className="modal" role="dialog">
+                                  <div className="modal-box">
+                                    <form onSubmit={(event) => handleUpgrade(event, task._id)} className="space-y-4 font-normal">
+                                      <div className="form-control w-full">
+                                        <input
+                                          type="text"
+                                          name="title"
+                                          placeholder="Task Title"
+                                          className="input input-bordered"
+                                          required
+                                        />
+                                      </div>
+                                      <div className="form-control w-full">
+                                        <input
+                                          type="text"
+                                          name="description"
+                                          placeholder="Task Description"
+                                          className="input input-bordered"
+                                          required
+                                        />
+                                      </div>
+                                      <div className="flex space-x-1">
+                                        <div className="form-control w-full">
+                                          <input
+                                            type="date"
+                                            name="deadline"
+                                            placeholder="Select Deadline"
+                                            className="input input-bordered"
+                                            min={new Date().toISOString().split('T')[0]}
+                                            required
+                                          />
+                                        </div>
+                                        <div className="form-control w-full">
+                                          <select
+                                            name="priority"
+                                            className="input input-bordered"
+                                            required
+                                          >
+                                            <option value="" disabled>Select Priority</option>
+                                            <option value="Low">Low</option>
+                                            <option value="Moderate">Moderate</option>
+                                            <option value="High">High</option>
+                                          </select>
+                                        </div>
+                                      </div>
+                                      <input type="submit" value="Submit" className="btn w-full" />
+                                    </form>
+
+                                  </div>
+                                  <label className="modal-backdrop" htmlFor={`my_modal_${task._id}`}></label>
+                                </div>
+
+                                <button
+                                  onClick={() => handleDelete(task._id)}
+                                  className="btn btn-xs text-red-500"
+                                >
+                                  <RiDeleteBin2Fill />
+                                </button>
+                              </div>
                             </div>
                             <p className="text-xs">{task.description}</p>
                             <div className="flex justify-between">
@@ -182,7 +296,7 @@ const Dashboard = () => {
                 ref={provided.innerRef}
                 className="flex-1 bg-base-300 min-h-screen"
               >
-                <h1 className="text-center bg-green-400 p-3 font-bold text-base-300">On Going</h1>
+                <h1 className="text-center bg-green-400 p-3 font-bold text-base-300 rounded-t-xl">On Going</h1>
                 <div>
                   {ongoingTasks?.map((task, index) => (
                     <Draggable key={task._id} draggableId={task._id} index={index}>
@@ -242,7 +356,7 @@ const Dashboard = () => {
                 ref={provided.innerRef}
                 className="flex-1 bg-base-300 min-h-screen"
               >
-                <h1 className="text-center bg-green-500 p-3 font-bold text-base-300">Completed</h1>
+                <h1 className="text-center bg-green-500 p-3 font-bold text-base-300 rounded-t-xl">Completed</h1>
                 <div>
                   {completedTasks?.map((task, index) => (
                     <Draggable key={task._id} draggableId={task._id} index={index}>
@@ -258,9 +372,9 @@ const Dashboard = () => {
                               <h2 className="font-bold">{task.title}</h2>
                               <button
                                 onClick={() => handleDelete(task._id)}
-                                className="btn btn-xs text-red-500"
+                                className="btn btn-xs text-green-500"
                               >
-                                <RiDeleteBin2Fill />
+                                <FaCheckSquare />
                               </button>
                             </div>
                             <p className="text-xs">{task.description}</p>
@@ -278,7 +392,7 @@ const Dashboard = () => {
                               </div>
                               <div className="flex items-center text-xs space-x-1">
                                 <p className="font-semibold">Deadline:</p>
-                                <span style={{ color: isDeadlineNear(task.deadline) }}>
+                                <span className='text-green-500'>
                                   <FaCalendar />
                                 </span>
                                 <span>{task.deadline}</span>

@@ -35,7 +35,7 @@ const NavDash = ({ title, btn, profile, refetch }) => {
         const currentDate = new Date();
         data.createdAt = currentDate.toISOString();
 
-        const task = { title: data.title, description: data.description, deadline: data.deadline, priority: data.priority, owner: owner, createdAt: data.createdAt,  status: 'todo' };
+        const task = { title: data.title, description: data.description, deadline: data.deadline, priority: data.priority, owner: owner, createdAt: data.createdAt, status: 'todo' };
         // console.log("Form Data:", task);
 
         axiosPublic.post('/addTask', task)
@@ -75,7 +75,6 @@ const NavDash = ({ title, btn, profile, refetch }) => {
                     <dialog id="my_modal_2" className="modal">
                         <div className="modal-box">
                             {/* things go here */}
-
                             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                                 <div className="form-control w-full">
                                     <input
@@ -132,10 +131,6 @@ const NavDash = ({ title, btn, profile, refetch }) => {
                                 <input type="submit" value="Submit" className="btn w-full" />
 
                             </form>
-
-
-
-
                         </div>
                         <form method="dialog" className="modal-backdrop">
                             <button>close</button>
