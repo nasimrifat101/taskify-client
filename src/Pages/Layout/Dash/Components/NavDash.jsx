@@ -9,7 +9,7 @@ import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import { ToastContainer, toast } from "react-toastify";
 import useAuth from "../../../../Hooks/useAuth";
 
-const NavDash = ({ title, btn, profile }) => {
+const NavDash = ({ title, btn, profile, refetch }) => {
     const [selectedDate, setSelectedDate] = useState(null);
     const axiosPublic = useAxiosPublic()
     const { user } = useAuth()
@@ -35,7 +35,7 @@ const NavDash = ({ title, btn, profile }) => {
         const currentDate = new Date();
         data.createdAt = currentDate.toISOString();
 
-        const task = { title: data.title, description: data.description, deadline: data.deadline, priority: data.priority, owner: owner, createdAt: data.createdAt };
+        const task = { title: data.title, description: data.description, deadline: data.deadline, priority: data.priority, owner: owner, createdAt: data.createdAt,  status: 'todo' };
         // console.log("Form Data:", task);
 
         axiosPublic.post('/addTask', task)
@@ -44,6 +44,7 @@ const NavDash = ({ title, btn, profile }) => {
                     toast('Task Added Successfully')
                     reset()
                     setSelectedDate('')
+                    refetch()
                     // document.getElementById('my_modal_2').close()
                 }
             })
@@ -51,7 +52,6 @@ const NavDash = ({ title, btn, profile }) => {
                 toast.error(err.message)
             })
     }
-
 
     return (
         <div>
@@ -122,9 +122,9 @@ const NavDash = ({ title, btn, profile }) => {
                                             name="priority"
                                         >
                                             <option value="" disabled>Select Priority</option>
-                                            <option value="low">Low</option>
-                                            <option value="moderate">Moderate</option>
-                                            <option value="high">High</option>
+                                            <option value="Low">Low</option>
+                                            <option value="Moderate">Moderate</option>
+                                            <option value="High">High</option>
                                         </select>
                                         {errors.priority && <span className="text-error">{errors.priority.message}</span>}
                                     </div>
