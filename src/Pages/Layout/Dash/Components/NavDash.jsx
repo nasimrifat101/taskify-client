@@ -5,25 +5,51 @@ import { NavLink } from "react-router-dom";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useState } from "react";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+import { ToastContainer, toast } from "react-toastify";
+import useAuth from "../../../../Hooks/useAuth";
 
 const NavDash = ({ title, btn, profile }) => {
     const [selectedDate, setSelectedDate] = useState(null);
+    const axiosPublic = useAxiosPublic()
+    const { user } = useAuth()
+    const owner = user?.email
+    // console.log(owner)
 
     const {
         register,
         setValue,
         formState: { errors },
         handleSubmit,
+        reset
     } = useForm();
+
 
     const onSubmit = async (data) => {
         data.deadline = selectedDate.toLocaleDateString('en-GB', {
             day: 'numeric',
             month: 'short',
             year: 'numeric',
-          });
-        console.log("Form Data:", data);
+        });
 
+        const currentDate = new Date();
+        data.createdAt = currentDate.toISOString();
+
+        const task = { title: data.title, description: data.description, deadline: data.deadline, priority: data.priority, owner: owner, createdAt: data.createdAt };
+        // console.log("Form Data:", task);
+
+        axiosPublic.post('/addTask', task)
+            .then(res => {
+                if (res.data.insertedId) {
+                    toast('Task Added Successfully')
+                    reset()
+                    setSelectedDate('')
+                    // document.getElementById('my_modal_2').close()
+                }
+            })
+            .catch(err => {
+                toast.error(err.message)
+            })
     }
 
 
@@ -83,7 +109,7 @@ const NavDash = ({ title, btn, profile }) => {
                                                 setValue("deadline", date, { shouldValidate: true });
                                             }}
                                             placeholderText="Select Deadline"
-                                            dateFormat="dd MMM yyyy" 
+                                            dateFormat="dd MMM yyyy"
                                             minDate={new Date()}
                                             className="input input-bordered"
                                         />
@@ -93,6 +119,7 @@ const NavDash = ({ title, btn, profile }) => {
                                         <select
                                             {...register("priority", { required: 'Priority is required' })}
                                             className="input input-bordered"
+                                            name="priority"
                                         >
                                             <option value="" disabled>Select Priority</option>
                                             <option value="low">Low</option>
@@ -102,7 +129,7 @@ const NavDash = ({ title, btn, profile }) => {
                                         {errors.priority && <span className="text-error">{errors.priority.message}</span>}
                                     </div>
                                 </div>
-                                <input type="submit" value="Login" className="btn w-full" />
+                                <input type="submit" value="Submit" className="btn w-full" />
 
                             </form>
 
@@ -119,6 +146,7 @@ const NavDash = ({ title, btn, profile }) => {
                     <NavLink to='/' className="btn"><FaHome /></NavLink>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };
