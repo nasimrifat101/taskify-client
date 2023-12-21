@@ -165,7 +165,7 @@ const Dashboard = () => {
     <div>
       <NavDash title={`Welcome ${user?.displayName}`} btn='Add Task' profile={user?.photoURL} refetch={refetchTasks} />
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="grid grid-cols-3 gap-1 px-1">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-1 px-1">
           <Droppable droppableId="todo">
             {(provided) => (
               <div
@@ -173,7 +173,9 @@ const Dashboard = () => {
                 ref={provided.innerRef}
                 className="flex-1 bg-base-300 min-h-screen"
               >
-                <h1 className="text-center bg-green-300 p-3 font-bold text-base-300 rounded-t-xl">To-do</h1>
+                <h1 className="text-center bg-green-300 p-3 font-bold text-base-300 rounded-t-xl">{
+                  tasks?.length > 0 ? `${tasks?.length} To-Do` : 'To-Do'
+                }</h1>
                 <div>
                   {tasks?.map((task, index) => (
                     <Draggable key={task._id} draggableId={task._id} index={index}>
@@ -258,7 +260,7 @@ const Dashboard = () => {
                               </div>
                             </div>
                             <p className="text-xs">{task.description}</p>
-                            <div className="flex justify-between">
+                            <div className="md:flex justify-between">
                               <div className="flex items-center text-xs space-x-2">
                                 <p className="font-semibold">Priority :</p>
                                 {task?.priority === 'High' ? (
@@ -296,7 +298,9 @@ const Dashboard = () => {
                 ref={provided.innerRef}
                 className="flex-1 bg-base-300 min-h-screen"
               >
-                <h1 className="text-center bg-green-400 p-3 font-bold text-base-300 rounded-t-xl">On Going</h1>
+                <h1 className="text-center bg-green-400 p-3 font-bold text-base-300 rounded-t-xl">{
+                  ongoingTasks?.length > 0 ? `${ongoingTasks?.length} On Going` : 'On Going'
+                }</h1>
                 <div>
                   {ongoingTasks?.map((task, index) => (
                     <Draggable key={task._id} draggableId={task._id} index={index}>
@@ -318,7 +322,7 @@ const Dashboard = () => {
                               </button>
                             </div>
                             <p className="text-xs">{task.description}</p>
-                            <div className="flex justify-between">
+                            <div className="md:flex justify-between">
                               <div className="flex items-center text-xs space-x-2">
                                 <p className="font-semibold">Priority :</p>
                                 {task?.priority === 'High' ? (
@@ -356,7 +360,9 @@ const Dashboard = () => {
                 ref={provided.innerRef}
                 className="flex-1 bg-base-300 min-h-screen"
               >
-                <h1 className="text-center bg-green-500 p-3 font-bold text-base-300 rounded-t-xl">Completed</h1>
+                <h1 className="text-center bg-green-500 p-3 font-bold text-base-300 rounded-t-xl">{
+                  completedTasks?.length > 0 ? `${completedTasks?.length} Completed` : 'Completed'
+                }</h1>
                 <div>
                   {completedTasks?.map((task, index) => (
                     <Draggable key={task._id} draggableId={task._id} index={index}>
@@ -378,7 +384,7 @@ const Dashboard = () => {
                               </button>
                             </div>
                             <p className="text-xs">{task.description}</p>
-                            <div className="flex justify-between">
+                            <div className="md:flex justify-between">
                               <div className="flex items-center text-xs space-x-2">
                                 <p className="font-semibold">Priority :</p>
                                 {task?.priority === 'High' ? (

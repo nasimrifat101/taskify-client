@@ -66,7 +66,7 @@ const NavDash = ({ title, btn, profile, refetch }) => {
                         </div>
 
                     </div>
-                    <a className="btn btn-ghost text-xl">{title}</a>
+                    <a className="hidden md:block font-semibold px-2 text-xl">{title}</a>
                 </div>
 
                 <div className="navbar-end space-x-1">
