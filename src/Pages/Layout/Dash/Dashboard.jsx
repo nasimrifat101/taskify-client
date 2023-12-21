@@ -1,10 +1,11 @@
+/* eslint-disable no-unused-vars */
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { FaCalendar } from "react-icons/fa";
 import { FcHighPriority, FcLowPriority, FcMediumPriority } from "react-icons/fc";
 import { RiDeleteBin2Fill } from "react-icons/ri";
 import { ToastContainer, toast } from "react-toastify";
-import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect} from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import NavDash from "./Components/NavDash";
@@ -12,30 +13,54 @@ import NavDash from "./Components/NavDash";
 const Dashboard = () => {
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
+  const queryClient = useQueryClient();
 
-  const { data: tasks, refetch, isLoading } = useQuery({
-    queryKey: ['tasks'],
+  useEffect(() => {
+    // Manually trigger the queries when user data is available
+    if (user?.email) {
+      queryClient.refetchQueries(['tasks']);
+      queryClient.refetchQueries(['ongoingTasks']);
+      queryClient.refetchQueries(['completedTasks']);
+    }
+  }, [user?.email, queryClient]);
+
+  const { data: tasks, refetch: refetchTasks, isLoading: tasksLoading } = useQuery({
+    queryKey: ['tasks', user?.email], // Use user?.email as part of the query key
     queryFn: async () => {
-      const res = await axiosPublic.get(`/tasks/${user?.email}`);
+      if (!user?.email) {
+        return [];
+      }
+
+      const res = await axiosPublic.get(`/tasks/${user.email}`);
       return res.data;
     },
+    enabled: !!user?.email,
   });
 
-
   const { data: ongoingTasks, refetch: refetchOngoing, isLoading: ongoingLoading } = useQuery({
-    queryKey: ['ongoingTasks'],
+    queryKey: ['ongoingTasks', user?.email],
     queryFn: async () => {
-      const res = await axiosPublic.get(`/ongoingTasks/${user?.email}`);
+      if (!user?.email) {
+        return [];
+      }
+
+      const res = await axiosPublic.get(`/ongoingTasks/${user.email}`);
       return res.data;
     },
+    enabled: !!user?.email,
   });
 
   const { data: completedTasks, refetch: refetchCompleted, isLoading: completedLoading } = useQuery({
-    queryKey: ['completedTasks'],
+    queryKey: ['completedTasks', user?.email],
     queryFn: async () => {
-      const res = await axiosPublic.get(`/completedTasks/${user?.email}`);
+      if (!user?.email) {
+        return [];
+      }
+
+      const res = await axiosPublic.get(`/completedTasks/${user.email}`);
       return res.data;
     },
+    enabled: !!user?.email,
   });
 
   const onDragEnd = (result) => {
@@ -52,7 +77,7 @@ const Dashboard = () => {
     axiosPublic.put(`/updateTaskStatus/${draggableId}`, {
       newStatus: destination.droppableId,
     }).then(() => {
-      refetch();
+      refetchTasks();
       refetchOngoing()
       refetchCompleted()
     });
@@ -62,7 +87,9 @@ const Dashboard = () => {
     axiosPublic.delete(`/deleteTask/${id}`).then((res) => {
       if (res.data.deletedCount > 0) {
         toast('Task Deleted Successfully');
-        refetch();
+        refetchTasks();
+        refetchOngoing()
+        refetchCompleted()
       }
     });
   };
@@ -85,7 +112,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <NavDash title={`Welcome ${user?.displayName}`} btn='Add Task' profile={user?.photoURL} refetch={refetch} />
+      <NavDash title={`Welcome ${user?.displayName}`} btn='Add Task' profile={user?.photoURL} refetch={refetchTasks} />
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="grid grid-cols-3 gap-3">
           <Droppable droppableId="todo">
