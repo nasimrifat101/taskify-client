@@ -5,6 +5,8 @@ import NotFound from "../Pages/components/Error/NotFound";
 import Login from "../Pages/components/Auth/Login";
 import Signup from "../Pages/components/Auth/SignUp";
 import Dashboard from "../Pages/Layout/Dash/Dashboard";
+import PrivateRoute from "../Providers/PrivateRoute";
+import About from "../Pages/components/Home/components/About";
 
 export const router = createBrowserRouter([
     {
@@ -26,7 +28,11 @@ export const router = createBrowserRouter([
             },
             {
                 path: '/dashboard',
-                element: <Dashboard />
+                element: <PrivateRoute><Dashboard /></PrivateRoute>
+            },
+            {
+                path: '/about',
+                element: <About/>
             }
         ]
     },

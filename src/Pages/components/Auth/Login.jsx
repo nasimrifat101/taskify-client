@@ -34,7 +34,7 @@ const Login = () => {
             <div className="max-w-6xl mx-auto grid lg:grid-cols-2">
                 <div className="p-10 hidden lg:block">
                     <img
-                        src="https://i.postimg.cc/26G0zg4P/pramod-tiwari-jokb6u-SXflc-unsplash.jpg"
+                        src="https://i.postimg.cc/Dw0Kmgx3/Frame_3_(1).png"
                         alt=""
                         className="h-[480px] w-full"
                     />
