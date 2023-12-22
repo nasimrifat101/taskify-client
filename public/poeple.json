@@ -1,0 +1,33 @@
+[
+    {
+      "id": 1,
+      "title": "Students",
+      "description": "Organize assignments and deadlines, boosting productivity and reducing stress. Enhance academic performance and time management skills."
+    },
+    {
+      "id": 2,
+      "title": "Business Professionals",
+      "description": "Efficiently manage tasks, projects, and meetings. Improve workflow, collaboration, and overall productivity for better business outcomes."
+    },
+    {
+      "id": 3,
+      "title": "Freelancers",
+      "description": "Streamline project management, meet deadlines, and showcase reliability. Optimize time and task tracking for successful freelance careers."
+    },
+    {
+      "id": 4,
+      "title": "Entrepreneurs",
+      "description": "Plan, prioritize, and execute business strategies. Drive innovation and manage workload effectively to achieve entrepreneurial success."
+    },
+    {
+      "id": 5,
+      "title": "Creatives",
+      "description": "Organize creative projects and ideas, fostering inspiration. Enhance creative output and meet artistic goals with efficient task management."
+    },
+    {
+      "id": 6,
+      "title": "Parents",
+      "description": "Coordinate family schedules, manage household tasks, and stay organized. Facilitate efficient family life and balance responsibilities effectively."
+    }
+  ]
+  
